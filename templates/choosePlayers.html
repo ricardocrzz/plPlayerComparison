@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Choose Two Players</title>
+<script>
+    var firstPlayerId = null;
+    var secondPlayerId = null;
+
+    function selectFirstPlayer(playerId) {
+        console.log(`current first player : ${firstPlayerId}`);
+        console.log(`You have selected Player ID: ${playerId} on the first list`);
+        
+        if (firstPlayerId === null) {
+            console.log("setting first player");
+            firstPlayerId = playerId;
+        } else {
+            console.log("resetting first player");
+            firstPlayerId = playerId;
+        }
+        updateButtonVisibility();
+    }
+    function selectSecondPlayer(playerId) {
+        console.log(`current second player :${secondPlayerId}`);
+        console.log(`You have selected Player ID: ${playerId} on the second list`);
+        
+        if (secondPlayerId === null) {
+            console.log("setting second player");
+            secondPlayerId = playerId;
+        } else {
+            console.log("resetting second player");
+            secondPlayerId = playerId;
+        }
+        updateButtonVisibility();
+    }
+
+    function updateButtonVisibility() {
+        var compareButton = document.getElementById('compareButton');
+        compareButton.style.display = (firstPlayerId !== null && secondPlayerId !== null) ? 'block' : 'none';
+    }
+    function compareButtonPressed() {
+        window.location.href = "/compare?firstPlayer=" + firstPlayerId + "&secondPlayer=" + secondPlayerId;
+    }
+
+</script>
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1>Choose Two Players To Compare</h1>
+
+    <h4>Select First Player</h4>
+    <ul>
+        {% for player, wage in data %}
+        <li>
+            <button type="button"
+                onclick="selectFirstPlayer('{{ player[0] }}')">
+                <ul>
+                    <li>{{ player[1] | upper }}</li>
+                    <li>Kit Number: {{ player[0] }}</li>
+                    <li>Team: {% if player[2] == 1%} Manchester City
+                        {% elif player[2] == 5%} Liverpool
+                        {%endif%}</li>
+                    <li>Country: {{ player[3]| upper }}</li>
+                    <li>Field Position:
+                        {% if player[4] == 1%} Goalkeeper
+                        {% elif player[4] == 2%} Defender
+                        {% elif player[4] ==3%} Midfielder
+                        {% elif player[4] ==4%} Forward
+                        {%endif%}</li>
+                    <li>Age: {{ player[5] }}</li>
+                    <li>Annual Wage: {{ '{:,.0f}'.format(wage[1] *
+                        1000000)}} €</li>
+                    <li>Transfer: {{ '{:,.0f}'.format(wage[2] *
+                        1000000)}} €</li>
+
+                    <li>Joined: {{ wage[3] }}</li>
+                </ul>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h4>Select Second Player</h4>
+    <ul>
+        {% for player, wage in data %}
+        <li>
+            <button type="button"
+                onclick="selectSecondPlayer('{{ player[0] }}')">
+                <ul>
+                    <li>{{ player[1] | upper }}</li>
+                    <li>Kit Number: {{ player[0] }}</li>
+                    <li>Team: {% if player[2] == 1%} Manchester City
+                        {% elif player[2] == 5%} Liverpool
+                        {%endif%}</li>
+                    <li>Country: {{ player[3]| upper }}</li>
+                    <li>Field Position:
+                        {% if player[4] == 1%} Goalkeeper
+                        {% elif player[4] == 2%} Defender
+                        {% elif player[4] ==3%} Midfielder
+                        {% elif player[4] ==4%} Forward
+                        {%endif%}</li>
+                    <li>Age: {{ player[5] }}</li>
+                    <li>Annual Wage: {{ '{:,.0f}'.format(wage[1] *
+                        1000000)}} €</li>
+                    <li>Transfer: {{ '{:,.0f}'.format(wage[2] *
+                        1000000)}} €</li>
+
+                    <li>Joined: {{ wage[3] }}</li>
+                </ul>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+    <button id="compareButton" style="display: none;"
+        onclick="compareButtonPressed()">Compare</button>
+
+</div>
+{% endblock %}

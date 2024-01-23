@@ -24,12 +24,31 @@ def fetchData():
 
     return [(player, wage) for player in players for wage in wages if player[0] == wage[0]]
 
+
+
+
+
 @app.route('/compare')
 def compare():
+    firstPlayerId=request.args.get('firstPlayer')
+    secondPlayerId=request.args.get('secondPlayer')
+    print('current first player: '+firstPlayerId)
+    print('current second player: '+secondPlayerId)
+    return "Result page"
+
+@app.route('/choosePlayers', methods=['POST', 'GET'])
+def choosePlayers():
+    if request.method == 'POST':
+        firstPlayer = request.form.get('firstPlayer')
+        secondPlayer = request.form.get('secondPlayer')
+
+        if firstPlayer and secondPlayer:
+            print(firstPlayer)
+            print(secondPlayer)
+            return redirect('/result')
+
     totalData=fetchData()
-
-    return render_template('compare.html', data=totalData)
-
+    return render_template('choosePlayers.html', data=totalData)
 
 @app.route('/addPlayer', methods=['POST', 'GET'])
 def addPlayer():
