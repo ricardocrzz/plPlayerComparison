@@ -24,17 +24,39 @@ def fetchData():
 
     return [(player, wage) for player in players for wage in wages if player[0] == wage[0]]
 
-
-
-
-
 @app.route('/compare')
 def compare():
     firstPlayerId=request.args.get('firstPlayer')
     secondPlayerId=request.args.get('secondPlayer')
-    print('current first player: '+firstPlayerId)
-    print('current second player: '+secondPlayerId)
-    return "Result page"
+    try:
+        query=f"select * from players where playerId = {firstPlayerId}"
+        cursor.execute(query)
+        firstPlayerData = cursor.fetchone()
+
+        query=f"select * from wages where playerId = {firstPlayerId}"
+        cursor.execute(query)
+        firstPlayerWageData = cursor.fetchone()
+
+        query=f"select * from players where playerId = {secondPlayerId}"
+        cursor.execute(query)
+        secondPlayerData = cursor.fetchone()
+
+        query=f"select * from wages where playerId = {secondPlayerId}"
+        cursor.execute(query)
+        secondPlayerWageData = cursor.fetchone()
+
+        if firstPlayerData and firstPlayerWageData and secondPlayerData and secondPlayerWageData:
+            totalData = [(firstPlayerData, firstPlayerWageData), (secondPlayerData,secondPlayerWageData)]
+
+        else:
+            print(f"no first player found with id {firstPlayerId}")
+
+        return render_template('compare.html', data=totalData)
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+
+    return render_template('compare.html')  # Handle the case where an error occurs
 
 @app.route('/choosePlayers', methods=['POST', 'GET'])
 def choosePlayers():
